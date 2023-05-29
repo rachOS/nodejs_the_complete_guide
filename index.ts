@@ -27,15 +27,15 @@ const server = https.createServer((req, res) => {
     const body: any[] = [];
 
     req.on('data', chunk => body.push(chunk));
-
-    req.on('end', () => {
+    return req.on('end', () => {
       const parsedBuffer = Buffer.concat(body).toString();
       const message = parsedBuffer.split('=')[1];
-      fs.writeFileSync('message.txt', message);
+      fs.writeFile('message.txt', message, error => {
+        res.statusCode = 302;
+        res.setHeader('Location', '/');
+        return res.end();
+      });
     });
-
-    res.statusCode = 302;
-    res.setHeader('Location', '/');
   }
 
   res.write(
