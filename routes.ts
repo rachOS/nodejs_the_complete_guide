@@ -1,15 +1,15 @@
-import { Buffer } from 'node:buffer';
-import fs from 'node:fs';
-import { IncomingMessage, ServerResponse } from 'http';
+import { Buffer } from 'node:buffer'
+import fs from 'node:fs'
+import { IncomingMessage, ServerResponse } from 'http'
 
-type HTTPRequest = InstanceType<typeof IncomingMessage>;
+type HTTPRequest = InstanceType<typeof IncomingMessage>
 type HTTPResponse = ServerResponse extends { new (...args: any): infer R }
   ? R
   : any & {
-      req: HTTPRequest;
-    };
+      req: HTTPRequest
+    }
 export const requestHandler = (req: HTTPRequest, res: HTTPResponse) => {
-  res.setHeader('Content-type', 'text/html');
+  res.setHeader('Content-type', 'text/html')
   if (req.url === '/') {
     res.write(
       '<html lang="fr">' +
@@ -23,32 +23,28 @@ export const requestHandler = (req: HTTPRequest, res: HTTPResponse) => {
         '       </form>' +
         '   </body>' +
         '</html>'
-    );
-    return res.end();
+    )
+    return res.end()
   }
 
   if (req.url === '/message' && req.method === 'POST') {
-    const body: Uint8Array[] = [];
+    const body: Uint8Array[] = []
 
-    req.on('data', chunk => body.push(chunk));
+    req.on('data', (chunk) => body.push(chunk))
 
     return req.on('end', () => {
-      const parsedBuffer = Buffer.concat(body).toString();
-      const message = parsedBuffer.split('=')[1];
-      fs.writeFile(
-        'message.txt',
-        message,
-        (error: NodeJS.ErrnoException | null) => {
-          if (error) {
-            throw new Error(error.toString());
-          }
-
-          res.statusCode = 302;
-          res.setHeader('Location', '/');
-          return res.end();
+      const parsedBuffer = Buffer.concat(body).toString()
+      const message = parsedBuffer.split('=')[1]
+      fs.writeFile('message.txt', message, (error: NodeJS.ErrnoException | null) => {
+        if (error) {
+          throw new Error(error.toString())
         }
-      );
-    });
+
+        res.statusCode = 302
+        res.setHeader('Location', '/')
+        return res.end()
+      })
+    })
   }
 
   res.write(
@@ -60,10 +56,10 @@ export const requestHandler = (req: HTTPRequest, res: HTTPResponse) => {
       '<p>Welcome to Node JS the complete Guide</p>' +
       '</body>' +
       '</html>'
-  );
+  )
 
-  return res.end();
-};
+  return res.end()
+}
 
 export const userRoutes = (req: HTTPRequest, res: HTTPResponse): any => {
   if (req.url === '/') {
@@ -78,26 +74,26 @@ export const userRoutes = (req: HTTPRequest, res: HTTPResponse): any => {
         '</form>' +
         '</body>' +
         '</html>'
-    );
+    )
 
-    return res.end();
+    return res.end()
   }
 
   if (req.url === '/create-user' && req.method === 'POST') {
-    const body: Array<Uint8Array> = [];
-    req.on('data', chunk => body.push(chunk));
+    const body: Array<Uint8Array> = []
+    req.on('data', (chunk) => body.push(chunk))
 
     return req.on('end', () => {
-      const parsedBuffer = Buffer.concat(body).toString();
-      const userName = parsedBuffer.split('=')[1];
+      const parsedBuffer = Buffer.concat(body).toString()
+      const userName = parsedBuffer.split('=')[1]
 
       fs.writeFile('user.txt', userName, () => {
-        console.log('=>(routes.ts:93) userName:', userName);
-        res.statusCode = 302;
-        res.setHeader('Location', '/');
-        return res.end();
-      });
-    });
+        console.log('=>(routes.ts:93) userName:', userName)
+        res.statusCode = 302
+        res.setHeader('Location', '/')
+        return res.end()
+      })
+    })
   }
 
   if (req.url === '/users') {
@@ -111,18 +107,12 @@ export const userRoutes = (req: HTTPRequest, res: HTTPResponse): any => {
         '</ul>' +
         '</body>' +
         '</html>'
-    );
+    )
 
-    return res.end();
+    return res.end()
   }
 
-  res.write(
-    '<html>' +
-      '<body>' +
-      '<h1>404! PAGE NOT FOUND BRO!</h1>' +
-      '</body>' +
-      '</html>'
-  );
+  res.write('<html>' + '<body>' + '<h1>404! PAGE NOT FOUND BRO!</h1>' + '</body>' + '</html>')
 
-  return res.end();
-};
+  return res.end()
+}
