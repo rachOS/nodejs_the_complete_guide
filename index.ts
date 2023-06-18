@@ -2,15 +2,19 @@ import bodyParser from 'body-parser'
 import express from 'express'
 import path from 'node:path'
 
-import { router } from './routes/router'
+import {router} from './routes/router'
+import * as shell from "shelljs";
+
+// Copy all the view templates
+shell.cp( "-R", "src/views", "dist/" );
 
 const app = express()
 
+app.set('views', path.join(__dirname, 'views'))
 app.set('view engine', 'ejs')
-app.set('views', 'views')
 
 app.use(bodyParser.urlencoded({ extended: false }))
-app.use(express.static(path.join(__dirname, 'public')))
+app.use(express.static(path.join(__dirname, '.', "dist")))
 
 app.use(router)
 

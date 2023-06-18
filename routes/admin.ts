@@ -1,11 +1,9 @@
 import express from 'express'
-import path from 'node:path'
-import { getRootDir } from '../helpers/navigation'
 
 const { Router } = express
 const adminRoutes = Router()
 adminRoutes.get('/add-product', (req, res) => {
-  res.sendFile(path.join(getRootDir, 'views', 'add-product.html'))
+  res.render('add-product')
 })
 
 const products: Array<{ title: string }> = []
