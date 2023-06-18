@@ -6,7 +6,11 @@ const shopRoutes = Router()
 shopRoutes.get('/', (req, res) => {
   console.log('=>(shop.ts:11) products', products)
 
-  res.render('shop', { prods: products, title: 'Shop', errorMessage: 'No products yet' })
+  res.render('shop', {
+    prods: products,
+    pageTitle: 'Shop',
+    errorMessage: 'No products yet',
+  })
 })
 
 export { shopRoutes }
